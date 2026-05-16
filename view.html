@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Data — DataVault Pro (GitHub)</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .view-container {
+            padding: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .back-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--accent-cyan);
+        }
+        .view-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #00e5ff, #b44dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.04em;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-btn {
+            padding: 10px 18px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.02);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.02em;
+        }
+        .filter-btn.active {
+            background: rgba(0,229,255,0.12);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 14px rgba(0,229,255,0.15);
+        }
+        .download-btn {
+            margin-left: auto;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #0d2137, #141830);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        .download-btn:hover {
+            box-shadow: 0 0 20px rgba(0,229,255,0.3);
+        }
+        .entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .entry-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            border: 1px solid var(--glass-border);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: center;
+            position: relative;
+        }
+        .entry-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(20,20,40,0.8);
+            transform: translateY(-2px);
+        }
+        .entry-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .entry-main {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .entry-category {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+        }
+        .entry-detail {
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        .entry-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+        .entry-inout {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .inout-in {
+            background: rgba(0,234,199,0.12);
+            color: var(--accent-teal);
+        }
+        .inout-out {
+            background: rgba(255,61,127,0.12);
+            color: var(--accent-pink);
+        }
+        .inout-absent {
+            background: rgba(255,183,77,0.12);
+            color: var(--accent-gold);
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 6px;
+            margin-left: 6px;
+            transition: color 0.2s, transform 0.2s;
+            align-self: center;
+        }
+        .delete-btn:hover {
+            color: var(--accent-pink);
+            transform: scale(1.15);
+        }
+        .loading-state,
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .loading-state svg,
+        .empty-state svg {
+            opacity: 0.4;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 600px) {
+            .entry-card {
+                grid-template-columns: auto 1fr;
+                gap: 8px;
+            }
+            .entry-meta {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .filter-bar {
+                justify-content: center;
+            }
+            .download-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles" id="bgParticles"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="view-container">
+        <div class="view-header">
+            <a href="index.html" class="back-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+                Back to Entry
+            </a>
+            <h2 class="view-title">DATA VAULT</h2>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-period="daily">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Daily
+            </button>
+            <button class="filter-btn" data-period="weekly">📆 Weekly</button>
+            <button class="filter-btn" data-period="monthly">🗓️ Monthly</button>
+            <button class="filter-btn" data-period="yearly">📈 Yearly</button>
+            <button class="filter-btn" data-period="all">🌐 All</button>
+            <button class="download-btn" id="downloadBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download CSV
+            </button>
+        </div>
+
+        <div id="entriesContainer" class="entries-list">
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p style="margin-top:12px;">Loading entries from GitHub…</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="view.js"></script>
+</body>
+</html>
