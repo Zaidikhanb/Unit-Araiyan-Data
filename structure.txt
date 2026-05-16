@@ -1,0 +1,10 @@
+/ (root)
+├── index.html         # Entry form
+├── view.html          # Data viewer
+├── style.css          # Shared styles
+├── script.js          # Entry logic (calls API to save)
+├── view.js            # Viewer logic (calls API to load/delete)
+└── api/
+    ├── save.js        # POST /api/save
+    ├── entries.js     # GET /api/entries
+    └── delete.js      # POST /api/delete
